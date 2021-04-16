@@ -38,7 +38,7 @@ namespace BlackJack
         public Player(string name, string status, int handValue)
         {
             Name = name;
-            Status = status; // Can be Plays or Stays. This property *almost* completely useless.
+            Status = status; // Can be Plays or Stays. This property is *almost* completely useless.
             HandValue = handValue;
         }
     }
