@@ -72,12 +72,9 @@ namespace BlackJack
 
             Console.WriteLine($"You are dealt {playerHand[0].ShowName()} and {playerHand[player.HandCount].ShowName()}.");
 
-            // Calculate hand value. 
+            // Calculate hand values. 
             player.HandValue = CalcVal(player, playerHand);
             Console.WriteLine($"Your hand value is {player.HandValue}.");
-
-            house.HandValue = CalcVal(house, houseHand);
-            Console.WriteLine($"House hand value is {house.HandValue}.");
 
             // Did you bust?
             if (SeeIfBust(player.HandValue) == true)
@@ -147,14 +144,7 @@ namespace BlackJack
             return;
         }
 
-        static bool SeeIfBust(int handValue)
-        {
-            if (handValue > 21)
-                return true;
-            else
-                return false;
-        }
-
+        // Create deck method.
         static List<Card> CreateDeck()
         {
             // Create the deck as a List of Cards.
@@ -188,6 +178,7 @@ namespace BlackJack
             return deck;
         }
 
+        // Shuffle cards method.
         static void ShuffleCards(List<Card> deck)
         {
             // Length of deck.
@@ -207,6 +198,7 @@ namespace BlackJack
 
         }
 
+        // Deal cards to a player.
         static void DealCard(List<Card> deck, Player player, List<Card> hand)
         {
             var topCard = deck[0];
@@ -215,6 +207,7 @@ namespace BlackJack
             player.HandCount++;
         }
 
+        // Calculate a player's hand value.
         static int CalcVal(Player player, List<Card> playerHand)
         {
             for (int cardCount = 0; cardCount < playerHand.Count; cardCount++)
@@ -222,6 +215,15 @@ namespace BlackJack
                 player.HandValue += playerHand[cardCount].Value;
             }
             return player.HandValue;
+        }
+
+        // See if a player busts.
+        static bool SeeIfBust(int handValue)
+        {
+            if (handValue > 21)
+                return true;
+            else
+                return false;
         }
 
         // Main loops the BlackJack game until player quits.
