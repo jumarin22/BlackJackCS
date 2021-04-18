@@ -92,6 +92,11 @@ namespace BlackJack
                 CalcVal(player, playerHand);
                 Console.WriteLine($"You are dealt {playerHand[player.HandCount].ShowName()}.");
                 Console.WriteLine($"Your hand value is {player.HandValue}.");
+                if (player.HandValue < 21)
+                {
+                    Console.WriteLine("Hit or stay?");
+                    hitOrStay = Console.ReadLine();
+                }
             }
 
             if (SeeIfBust(player.HandValue) == true)
@@ -102,6 +107,7 @@ namespace BlackJack
 
             // Computer's turn.
             Console.WriteLine($"House reveals {houseHand[0].ShowName()} and {houseHand[house.HandCount].ShowName()}");
+            CalcVal(house, houseHand);
             Console.WriteLine($"House hand value is {house.HandValue}.");
 
             if (SeeIfBust(house.HandValue) == true)
@@ -198,7 +204,7 @@ namespace BlackJack
 
         }
 
-        // Deal cards to a player.
+        // Deal cards method.
         static void DealCard(List<Card> deck, Player player, List<Card> hand)
         {
             var topCard = deck[0];
@@ -207,9 +213,11 @@ namespace BlackJack
             player.HandCount++;
         }
 
-        // Calculate a player's hand value.
+        // Calculate hand value method.
         static int CalcVal(Player player, List<Card> playerHand)
         {
+            player.HandValue = 0;
+
             for (int cardCount = 0; cardCount < playerHand.Count; cardCount++)
             {
                 player.HandValue += playerHand[cardCount].Value;
