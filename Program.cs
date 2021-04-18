@@ -163,6 +163,7 @@ namespace BlackJack
             Console.WriteLine($"House's hand value is {house.HandValue}.");
 
             // Determine winner. 
+            // Adventure Mode: Improve the win requirements. 
             if (player.HasBlackjack == true && house.HasBlackjack == false)
             {
                 Console.WriteLine("You have BlackJack and House doesn't. You win!");
@@ -188,7 +189,6 @@ namespace BlackJack
             {
                 Console.WriteLine("Hand values are the same. It's a push.");
             }
-
         }
 
         // Create deck method.
@@ -281,7 +281,7 @@ namespace BlackJack
 
             return player.HandValue;
         }
-
+        // See if Blackjack method.
         static void SeeIfBlackJack(Player player, List<Card> playerHand)
         {
             foreach (var card in playerHand)
