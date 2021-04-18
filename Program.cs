@@ -107,7 +107,7 @@ namespace BlackJack
                     CalcVal(player, playerHand);
                     Console.WriteLine($"You are dealt {playerHand[player.HandCount].ShowName()}.");
                     Console.WriteLine($"Your hand value is {player.HandValue}.");
-                    if (player.HandValue < 21)
+                    if (player.HandValue < 22)
                     {
                         Console.WriteLine("Hit or stay? (h / s)");
                         hitOrStay = Console.ReadLine();
@@ -260,11 +260,11 @@ namespace BlackJack
             player.HandValue = 0;
             var aceCount = 0; // Count aces in hand.
 
-            for (int cardCount = 0; cardCount < playerHand.Count; cardCount++)
+            foreach (var card in playerHand)
             {
-                player.HandValue += playerHand[cardCount].Value;
+                player.HandValue += card.Value;
 
-                if (playerHand[cardCount].ShowName().Contains("Ace"))
+                if (card.ShowName().Contains("Ace"))
                     aceCount++;
             }
 
