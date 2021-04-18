@@ -72,6 +72,9 @@ namespace BlackJack
 
             Console.WriteLine($"You are dealt {playerHand[0].ShowName()} and {playerHand[player.HandCount].ShowName()}.");
 
+            // Adventure mode: Reveal one of the house's cards to the player when cards dealt.
+            Console.WriteLine($"House shows {houseHand[0].ShowName()}");
+
             // Calculate hand values. 
             player.HandValue = CalcVal(player, playerHand);
             Console.WriteLine($"Your hand value is {player.HandValue}.");
@@ -84,9 +87,9 @@ namespace BlackJack
             }
             // else
             // Take your turn.
-            Console.WriteLine("Hit or stay?");
+            Console.WriteLine("Hit or stay? (h / s)");
             var hitOrStay = Console.ReadLine();
-            while (hitOrStay == "hit" && SeeIfBust(player.HandValue) == false)
+            while (hitOrStay.Contains("h") && SeeIfBust(player.HandValue) == false)
             {
                 DealCard(deck, player, playerHand);
                 CalcVal(player, playerHand);
@@ -94,7 +97,7 @@ namespace BlackJack
                 Console.WriteLine($"Your hand value is {player.HandValue}.");
                 if (player.HandValue < 21)
                 {
-                    Console.WriteLine("Hit or stay?");
+                    Console.WriteLine("Hit or stay? (h / s)");
                     hitOrStay = Console.ReadLine();
                 }
             }
@@ -106,6 +109,8 @@ namespace BlackJack
             }
 
             // Computer's turn.
+            Console.WriteLine();
+            Console.WriteLine("***House's Turn***")
             Console.WriteLine($"House reveals {houseHand[0].ShowName()} and {houseHand[house.HandCount].ShowName()}");
             CalcVal(house, houseHand);
             Console.WriteLine($"House hand value is {house.HandValue}.");
@@ -217,11 +222,27 @@ namespace BlackJack
         static int CalcVal(Player player, List<Card> playerHand)
         {
             player.HandValue = 0;
+            var aceCount = 0; // Count aces in hand.
 
             for (int cardCount = 0; cardCount < playerHand.Count; cardCount++)
             {
                 player.HandValue += playerHand[cardCount].Value;
+
+                if (playerHand[cardCount].ShowName().Contains("Ace"))
+                    aceCount++;
             }
+
+            while (aceCount > 0) // Adventure mode: Consider Aces to be 1 or 11. 
+            {
+                if (player.HandValue > 21)
+                {
+                    player.HandValue -= 10;
+                    aceCount--;
+                }
+                else
+                    break;
+            }
+
             return player.HandValue;
         }
 
@@ -242,7 +263,7 @@ namespace BlackJack
             {
                 PlayBlackJack();
 
-                Console.WriteLine("Do you want to play again? (y / n)?");
+                Console.WriteLine("Do you want to play again? (y / n)");
                 string answer = Console.ReadLine();
 
                 if (answer == "n")
