@@ -110,7 +110,7 @@ namespace BlackJack
 
             // Computer's turn.
             Console.WriteLine();
-            Console.WriteLine("***House's Turn***")
+            Console.WriteLine("***House's Turn***");
             Console.WriteLine($"House reveals {houseHand[0].ShowName()} and {houseHand[house.HandCount].ShowName()}");
             CalcVal(house, houseHand);
             Console.WriteLine($"House hand value is {house.HandValue}.");
