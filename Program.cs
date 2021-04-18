@@ -33,13 +33,11 @@ namespace BlackJack
         public string Name;
         public int HandValue;
         public int HandCount; // number of cards in a player's hand, kind of. Actually, marks player's List<Card> index value. 
-        public string Status; // Can be Plays or Stays (and maybe other things?). This property is *almost* completely useless and might be changed.
 
         // Constructor. 
-        public Player(string name, int handValue, int handcount, string status)
+        public Player(string name, int handValue, int handcount)
         {
             Name = name;
-            Status = status;
             HandValue = handValue;
             HandCount = handcount;
         }
@@ -59,8 +57,8 @@ namespace BlackJack
             ShuffleCards(deck); // Fisher–Yates.
 
             // Create two players.
-            var player = new Player("Player", 0, -1, "Plays"); // Player(Name, HandValue, HandCount, Status).
-            var house = new Player("House", 0, -1, "Plays");
+            var player = new Player("Player", 0, -1); // Player(Name, HandValue, HandCount, Status).
+            var house = new Player("House", 0, -1);
 
             // Create player hands.
             var playerHand = new List<Card>();
