@@ -34,9 +34,9 @@ namespace BlackJack
         public int HandValue;
         public int HandCount; // number of cards in a player's hand, kind of. Actually, marks player's List<Card> index value. 
         public bool HasBlackjack; // True if player has BlackJack on initial deal. 
-        public int SplitValue; // Adventure mode: Allow the player to "Split".
+        public int SplitValue; // Adventure mode: Allow the player to "Split". (Player can only split once).
         public int SplitCount;
-        public bool HasSplitJack;
+        public bool HasSplitJack; // If split hand makes BlackJack. 
 
         // Constructor. 
         public Player(string name, int handValue, int handcount, bool hasBlackJack, int splitValue, int splitCount, bool hasSplitJack)
@@ -65,8 +65,8 @@ namespace BlackJack
             ShuffleCards(deck); // Fisher–Yates.
 
             // Create two players.
-            var player = new Player("Player", 0, -1, false, 0, 0, false); // Player(name, handValue, handcount, hasBlackJack, SplitValue, splitCount, splitJack)
-            var house = new Player("House", 0, -1, false, 0, -1, false);
+            var player = new Player("Player", 0, -1, false, 0, 0, false); // Player(name, handValue, handcount, hasBlackJack, SplitValue, splitCount, hasSplitJack)
+            var house = new Player("House", 0, -1, false, 0, 0, false);
 
             // Create player hands.
             var playerHand = new List<Card>();
@@ -96,17 +96,17 @@ namespace BlackJack
             if (player.HasBlackjack == false)
                 Console.WriteLine($"Your hand value is {player.HandValue}.");
 
-            // See if cards can be split.
+            // See if cards can be split: if both cards have same value and start with the same character. 
             if (playerHand[0].Value == playerHand[1].Value && playerHand[0].ShowName()[..1] == playerHand[1].ShowName()[..1])
             {
                 Console.WriteLine("Do you want to split? (y / n)");
                 if (Console.ReadLine().Contains("y"))
                 {
-                    // Take the last card dealt from the main hand and put it in the split hand.
+                    // Take the last card dealt from the first hand and put it in the split hand.
                     var splitCard = playerHand[1];
                     playerHand.Remove(splitCard);
                     splitHand.Add(splitCard);
-                    // Deal a new card to the main hand and the split hand.
+                    // Deal a new card to the first hand and the split hand.
                     DealCard(deck, player, playerHand);
                     DealCard(deck, player, splitHand);
                     // Reset count/index values. 
@@ -117,24 +117,22 @@ namespace BlackJack
                     player.SplitValue = CalcVal(splitHand);
                     Console.WriteLine($"You split. Your first hand is dealt {playerHand[1].ShowName()}.");
                     Console.WriteLine($"Your split hand is dealt {splitHand[1].ShowName()}.");
-                    Console.WriteLine("First hand turn.");
+                    Console.WriteLine("***First hand turn***");
                     Console.WriteLine($"Your first hand is {playerHand[0].ShowName()} and {playerHand[1].ShowName()}.");
                     Console.WriteLine($"Your first hand value is { player.HandValue }.");
                 }
             }
 
-            // Take your turn.
+            // Check for BlackJack again in case of split. 
+            player.HasBlackjack = SeeIfBlackJack(playerHand);
+            if (player.HasBlackjack == true && player.SplitValue > 0)
+                Console.WriteLine("BlackJack!");
+
+            // Take your turn. First hand. 
             if (player.HasBlackjack == false)
             {
                 while (player.HandValue < 21)
                 {
-                    // Check for BlackJack in new first hand.
-                    if (player.HasBlackjack == true)
-                    {
-                        Console.WriteLine("BlackJack!");
-                        break;
-                    }
-
                     Console.WriteLine("Hit or stay? (h / s)");
                     if (Console.ReadLine().Contains("h") == false)
                         break;
@@ -143,12 +141,6 @@ namespace BlackJack
                         DealCard(deck, player, playerHand);
                         player.HandValue = CalcVal(playerHand);
                         Console.WriteLine($"You are dealt {playerHand[player.HandCount].ShowName()}.");
-                    }
-                    player.HasBlackjack = SeeIfBlackJack(playerHand);
-                    if (player.HasBlackjack == true)
-                    {
-                        Console.WriteLine("BlackJack!");
-                        break;
                     }
 
                     if (player.SplitValue == 0)
@@ -166,12 +158,17 @@ namespace BlackJack
                     Console.WriteLine("Your first hand busts.");
             }
 
-            // Split hand turn. Player can only split once.
+            // Split hand turn.
             if (player.SplitValue > 1)
             {
                 Console.WriteLine("Split hand turn.");
                 Console.WriteLine($"Your split hand is {splitHand[0].ShowName()} and {splitHand[1].ShowName()}.");
                 Console.WriteLine($"Your split hand value is {player.SplitValue}.");
+
+                // Do you have BlackJack?
+                player.HasBlackjack = SeeIfBlackJack(splitHand);
+                if (player.HasBlackjack == true)
+                    Console.WriteLine("BlackJack!");
                 while (player.SplitValue < 21)
                 {
                     Console.WriteLine("Hit or stay? (h / s)");
@@ -193,7 +190,7 @@ namespace BlackJack
                     Console.WriteLine($"Your split hand value is {player.SplitValue}.");
                 }
 
-                if (player.HandValue > 21 && player.SplitValue > 21)
+                if (player.HandValue > 21 && player.SplitValue > 21) // If first and split hands busted, you lose. 
                 {
                     Console.WriteLine("You bust! Game Over.");
                     return;
@@ -210,6 +207,12 @@ namespace BlackJack
             house.HasBlackjack = SeeIfBlackJack(houseHand);
             if (house.HasBlackjack == true)
                 Console.WriteLine("BlackJack!");
+            if ((player.HasBlackjack == true && player.SplitValue == 0) && house.HasBlackjack == false)
+            {
+                Console.WriteLine("You have BlackJack and House doesn't. You win!");
+                return;
+            }
+
             if (house.HasBlackjack == false)
             {
                 Console.WriteLine($"House hand value is {house.HandValue}.");
