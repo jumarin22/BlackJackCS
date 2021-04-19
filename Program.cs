@@ -151,12 +151,12 @@ namespace BlackJack
                         Console.WriteLine($"Your first hand value is {player.HandValue}.");
                 }
 
-                if (player.HandValue > 21 && player.SplitValue == 0)
+                if (player.HandValue > 21 && player.SplitValue == 0) // If you bust and didn't split, you lose. 
                 {
                     Console.WriteLine("You bust! Game Over.");
                     return;
                 }
-                else if (player.HandValue > 21 && player.SplitValue > 0)
+                else if (player.HandValue > 21 && player.SplitValue > 0) // If you bust and did split, continue. 
                     Console.WriteLine("Your first hand busts.");
             }
 
