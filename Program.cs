@@ -163,7 +163,8 @@ namespace BlackJack
             // Split hand turn.
             if (player.SplitValue > 1)
             {
-                Console.WriteLine("Split hand turn.");
+                Console.WriteLine();
+                Console.WriteLine("***Split hand turn***");
                 Console.WriteLine($"Your split hand is {splitHand[0].ShowName()} and {splitHand[1].ShowName()}.");
                 Console.WriteLine($"Your split hand value is {player.SplitValue}.");
 
