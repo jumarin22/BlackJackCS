@@ -121,7 +121,7 @@ namespace BlackJack
                     Console.WriteLine();
                     Console.WriteLine("***First hand turn***");
                     Console.WriteLine($"Your first hand is {playerHand[0].ShowName()} and {playerHand[1].ShowName()}.");
-                    Console.WriteLine($"Your first hand value is { player.HandValue }.");
+                    Console.WriteLine($"Your first hand value is {player.HandValue}.");
                 }
             }
 
@@ -137,7 +137,7 @@ namespace BlackJack
                 {
                     Console.WriteLine("Hit or stay? (h / s)");
                     if (Console.ReadLine().Contains("h") == false)
-                        break;
+                        break; // Stop while loop that deals if you don't hit. 
                     else
                     {
                         DealCard(deck, player, playerHand);
@@ -188,7 +188,7 @@ namespace BlackJack
                     Console.WriteLine($"Your split hand value is {player.SplitValue}.");
                 }
 
-                if (player.HandValue > 21 && player.SplitValue > 21) // If first and split hands busted, you lose. 
+                if (player.HandValue > 21 && player.SplitValue > 21) // If first and split hands both busted, you lose. 
                 {
                     Console.WriteLine("You bust! Game Over.");
                     return;
