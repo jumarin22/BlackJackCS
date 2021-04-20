@@ -86,14 +86,14 @@ namespace BlackJack
 
             // Do you have BlackJack? (Ace + 10 value card)
             player.HasBlackjack = SeeIfBlackJack(playerHand);
-            if (player.HasBlackjack == true)
+            if (player.HasBlackjack)
                 Console.WriteLine("BlackJack!");
 
             // Adventure mode: Reveal one of house's cards to the player when cards dealt.
             Console.WriteLine($"House shows {houseHand[0].ShowName()}.");
 
             // Display hand value. 
-            if (player.HasBlackjack == false)
+            if (!player.HasBlackjack)
                 Console.WriteLine($"Your hand value is {player.HandValue}.");
 
             // See if cards can be split: if both cards have same value and start with the same character. 
@@ -127,16 +127,16 @@ namespace BlackJack
 
             // Check for BlackJack again in case of split. 
             player.HasBlackjack = SeeIfBlackJack(playerHand);
-            if (player.HasBlackjack == true && player.SplitValue > 0)
+            if (player.HasBlackjack && player.SplitValue > 0)
                 Console.WriteLine("BlackJack!");
 
             // Take your turn. First hand. 
-            if (player.HasBlackjack == false) // End turn immediately if you already have BlackJack. 
+            if (!player.HasBlackjack) // End turn immediately if you already have BlackJack. 
             {
                 while (player.HandValue < 21)
                 {
                     Console.WriteLine("Hit or stay? (h / s)");
-                    if (Console.ReadLine().Contains("h") == false)
+                    if (!Console.ReadLine().Contains("h"))
                         break; // Stop while loop that deals if you don't hit. 
                     else
                     {
@@ -170,13 +170,13 @@ namespace BlackJack
 
                 // Do you have BlackJack? If so end turn immediately. 
                 player.HasBlackjack = SeeIfBlackJack(splitHand);
-                if (player.HasBlackjack == true)
+                if (player.HasBlackjack)
                     Console.WriteLine("BlackJack!");
 
                 while (player.SplitValue < 21)
                 {
                     Console.WriteLine("Hit or stay? (h / s)");
-                    if (Console.ReadLine().Contains("h") == false)
+                    if (!Console.ReadLine().Contains("h"))
                         break;
                     else
                     {
@@ -204,15 +204,15 @@ namespace BlackJack
             Console.WriteLine($"House reveals {houseHand[0].ShowName()} and {houseHand[house.HandCount].ShowName()}.");
             house.HandValue = CalcVal(houseHand);
             house.HasBlackjack = SeeIfBlackJack(houseHand);
-            if (house.HasBlackjack == true)
+            if (house.HasBlackjack)
                 Console.WriteLine("BlackJack!");
-            if ((player.HasBlackjack == true && player.SplitValue == 0) && house.HasBlackjack == false)
+            if (player.HasBlackjack && player.SplitValue == 0 && !house.HasBlackjack)
             {
                 Console.WriteLine("You have BlackJack and House doesn't. You win!");
                 return;
             }
 
-            if (house.HasBlackjack == false)
+            if (!house.HasBlackjack)
             {
                 Console.WriteLine($"House hand value is {house.HandValue}.");
 
@@ -249,9 +249,9 @@ namespace BlackJack
             // Adventure Mode: Improve the win requirements. 
             if (player.SplitValue == 0)
             {
-                if (player.HasBlackjack == true && house.HasBlackjack == false)
+                if (player.HasBlackjack && !house.HasBlackjack)
                     Console.WriteLine("You have BlackJack and House doesn't. You win!");
-                else if (house.HasBlackjack == true && player.HasBlackjack == false)
+                else if (house.HasBlackjack && !player.HasBlackjack)
                     Console.WriteLine("House has BlackJack and you don't. House wins.");
                 else if (player.HandValue > house.HandValue)
                     Console.WriteLine("You win!");
@@ -263,9 +263,9 @@ namespace BlackJack
             }
 
             // First hand results.
-            if (player.HasBlackjack == true && house.HasBlackjack == false)
+            if (player.HasBlackjack && !house.HasBlackjack)
                 Console.WriteLine("Your first hand has BlackJack and House doesn't. You win!");
-            else if (house.HasBlackjack == true && player.HasBlackjack == false)
+            else if (house.HasBlackjack && !player.HasBlackjack)
                 Console.WriteLine("House has BlackJack and your first hand doesn't. House wins.");
             else if (player.HandValue > 21)
                 Console.WriteLine("Your first hand busted. House wins.");
@@ -277,9 +277,9 @@ namespace BlackJack
                 Console.WriteLine("Your first hand and house hand values are the same. It's a push.");
 
             // Split hand results.
-            if (player.HasSplitJack == true && house.HasBlackjack == false)
+            if (player.HasSplitJack && !house.HasBlackjack)
                 Console.WriteLine("Your split hand has BlackJack and House doesn't. You win!");
-            else if (house.HasBlackjack == true && player.HasSplitJack == false)
+            else if (house.HasBlackjack && !player.HasSplitJack)
                 Console.WriteLine("House has BlackJack and your split hand doesn't. House wins.");
             else if (player.SplitValue > 21)
                 Console.WriteLine("Your split hand busted. House wins.");
@@ -373,9 +373,9 @@ namespace BlackJack
 
             while (aceCount > 0) // Adventure mode: Consider Aces to be 1 or 11. 
             {
-                if (value > 21)
+                if (value > 21) // If the hand would bust...
                 {
-                    value -= 10;
+                    value -= 10; // ...decrease hand value by 10, making the Ace 1.
                     aceCount--;
                 }
                 else
